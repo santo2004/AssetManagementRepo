@@ -32,7 +32,7 @@ namespace AssetManagement.Services.Implementations
         public UserViewDto GetUserById(int userId)
         {
             var user = _context.Users
-                .Include(u => u.Role) // This loads the related Role entity
+                .Include(u => u.Role) 
                 .FirstOrDefault(u => u.UserId == userId);
 
             if (user == null) return null;
@@ -63,11 +63,9 @@ namespace AssetManagement.Services.Implementations
 
         public string CreateUser(UserCreateDto userDto)
         {
-            // Check if role exists
             var role = _context.Roles.FirstOrDefault(r => r.RoleId == userDto.RoleId);
             if (role == null) return "Invalid role.";
 
-            // Check for duplicates
             if (_context.Users.Any(u => u.Email == userDto.Email))
                 return "Email already exists.";
             if (_context.Users.Any(u => u.Username == userDto.Username))

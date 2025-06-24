@@ -15,13 +15,13 @@ namespace AssetManagement.Controllers
             _roleService = roleService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllRole")]
         public ActionResult<List<RoleDto>> GetAllRoles()
         {
             return _roleService.GetAllRoles();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetRoleById{id}")]
         public ActionResult<RoleDto> GetRoleById(int id)
         {
             var role = _roleService.GetRoleById(id);

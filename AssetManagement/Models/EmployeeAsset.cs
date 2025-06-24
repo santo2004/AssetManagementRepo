@@ -7,7 +7,7 @@
         public int AssetId { get; set; }
         public DateOnly AssignedDate { get; set; }
         public DateOnly? ReturnDate { get; set; }
-        public string Status { get; set; } // Active, Returned, InAudit
+        public string Status { get; set; } 
         public User User { get; set; }
         public Asset Asset { get; set; }
     }

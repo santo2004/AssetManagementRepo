@@ -7,7 +7,7 @@ namespace AssetManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Require authentication globally for this controller
+    [Authorize]
     public class AssetsController : ControllerBase
     {
         private readonly IAssetService _assetService;
@@ -17,16 +17,13 @@ namespace AssetManagement.Controllers
             _assetService = assetService;
         }
 
-        // ✅ Allow all authenticated users to view assets
-        [HttpGet]
-        [AllowAnonymous] // optional: remove this if only logged-in users should see assets
+        [HttpGet("GetAll")]
         public ActionResult<List<AssetDto>> GetAllAssets()
         {
             return _assetService.GetAllAssets();
         }
 
-        [HttpGet("{id}")]
-        [AllowAnonymous] // optional
+        [HttpGet("GetAllById/{id}")]
         public ActionResult<AssetDto> GetAssetById(int id)
         {
             var asset = _assetService.GetAssetById(id);
@@ -34,33 +31,59 @@ namespace AssetManagement.Controllers
             return asset;
         }
 
-        [HttpGet("by-status/{status}")]
-        [AllowAnonymous] // optional
+        [HttpGet("GetAllByStatus/{status}")] 
         public ActionResult<List<AssetDto>> GetAssetsByStatus(string status)
         {
             return _assetService.GetAssetsByStatus(status);
         }
 
-        // 🔐 Only Admins can create, update, delete
-        [HttpPost]
+        [HttpPost("CreateAsset")]
         [Authorize(Roles = "Admin")]
         public ActionResult<string> CreateAsset(AssetDto dto)
         {
             return _assetService.CreateAsset(dto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateAsset/{id}")]
         [Authorize(Roles = "Admin")]
         public ActionResult<string> UpdateAsset(int id, AssetDto dto)
         {
             return _assetService.UpdateAssetById(id, dto);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteAsset/{id}")]
         [Authorize(Roles = "Admin")]
         public ActionResult<string> DeleteAsset(int id)
         {
             return _assetService.DeleteAssetById(id);
+        }
+
+        [HttpPost("RequestAsset")]
+        [Authorize(Roles = "Employee,Manager")]
+        public ActionResult<string> RequestAsset([FromQuery] int assetId, [FromQuery] int userId)
+        {
+            return _assetService.RequestAsset(assetId, userId);
+        }
+
+        [HttpGet("RequestedAssets")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<List<AssetDto>> GetRequestedAssets()
+        {
+            return _assetService.GetRequestedAssets();
+        }
+
+        [HttpPost("AssignAsset")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<string> AssignAsset([FromQuery] int assetId, [FromQuery] int userId)
+        {
+            return _assetService.AssignAssetToUser(assetId, userId);
+        }
+
+        [HttpPost("RejectAssetRequest")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<string> RejectAssetRequest([FromQuery] int assetId, [FromQuery] int userId, [FromQuery] string comments)
+        {
+            return _assetService.RejectAssetRequest(assetId, userId, comments);
         }
     }
 }

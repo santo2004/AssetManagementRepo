@@ -85,5 +85,89 @@ namespace AssetManagement.Services.Implementations
             _context.SaveChanges();
             return "Asset deleted.";
         }
+
+        public string RequestAsset(int assetId, int userId)
+        {
+            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
+            if (asset == null) return "Asset not found.";
+
+            if (asset.Status != "Available") return "Asset is not available.";
+
+            asset.Status = "Requested";
+            _context.SaveChanges();
+
+            return "Asset request submitted.";
+        }
+
+        public List<AssetDto> GetRequestedAssets()
+        {
+            return _context.Assets
+                .Where(a => a.Status == "Requested")
+                .Select(a => new AssetDto
+                {
+                    AssetId = a.AssetId,
+                    AssetName = a.AssetName,
+                    Status = a.Status
+                }).ToList();
+        }
+
+        public string AssignAssetToUser(int assetId, int userId)
+        {
+            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
+            if (asset == null) return "Asset not found.";
+
+            if (asset.Status != "Requested") return "Asset was not requested.";
+
+            asset.Status = "Allocated";
+
+            var employeeAsset = new EmployeeAsset
+            {
+                AssetId = assetId,
+                UserId = userId,
+                AssignedDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Status = "Allocated"
+            };
+
+            _context.EmployeeAssets.Add(employeeAsset);
+            _context.SaveChanges();
+
+            return "Asset assigned to user.";
+        }
+
+        public string RejectAssetRequest(int assetId, int userId, string comments)
+        {
+            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
+            if (asset == null) return "Asset not found.";
+
+            if (asset.Status != "Requested") return "Asset was not requested.";
+
+            // Reset the asset status
+            asset.Status = "Available";
+
+            // Log in audit request
+            var audit = new AuditRequest
+            {
+                AssetId = assetId,
+                UserId = userId,
+                Comments = comments,
+                Status = "Rejected",
+                VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+
+            _context.AuditRequests.Add(audit);
+            _context.SaveChanges();
+
+            return "Asset request rejected and logged.";
+        }
+
+        private readonly IAuditRequestService _auditService;
+        private readonly IEmployeeAssetService _employeeAssetService;
+
+        public AssetService(AppDbContext context, IAuditRequestService auditService, IEmployeeAssetService employeeAssetService)
+        {
+            _context = context;
+            _auditService = auditService;
+            _employeeAssetService = employeeAssetService;
+        }
     }
 }

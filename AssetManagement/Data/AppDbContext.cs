@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore; // ✅ This is required
+﻿using Microsoft.EntityFrameworkCore; 
 using AssetManagement.Models;
 
 namespace AssetManagement.Data
 {
-    public class AppDbContext : DbContext // ✅ Make sure you inherit from DbContext
+    public class AppDbContext : DbContext 
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

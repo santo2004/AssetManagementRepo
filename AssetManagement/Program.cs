@@ -16,7 +16,6 @@ namespace AssetManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -25,7 +24,6 @@ namespace AssetManagement
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AssetManagement API", Version = "v1" });
 
-                // ✅ Add JWT support
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -33,7 +31,7 @@ namespace AssetManagement
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter your JWT token in the format: Bearer {your token}"
+                    Description = "Enter your JWT token in the format: {your token}"
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -52,12 +50,9 @@ namespace AssetManagement
                 });
             });
 
-
-            // Database context
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Service registrations
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IAssetService, AssetService>();
@@ -66,7 +61,6 @@ namespace AssetManagement
             builder.Services.AddScoped<IAuditRequestService, AuditRequestService>();
             builder.Services.AddScoped<JwtService>();
 
-            // JWT Authentication setup
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -88,7 +82,6 @@ namespace AssetManagement
 
             var app = builder.Build();
 
-            // Configure middleware
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -96,7 +89,7 @@ namespace AssetManagement
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthentication(); // Important: before UseAuthorization
+            app.UseAuthentication(); 
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

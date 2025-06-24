@@ -6,7 +6,7 @@
         public int AssetId { get; set; }
         public int UserId { get; set; }
         public DateOnly RequestDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
-        public string Status { get; set; }     // Pending, Verified, Rejected  
+        public string Status { get; set; }     
         public string Comments { get; set; }
         public DateOnly? VerifiedDate { get; set; }
         public Asset Asset { get; set; }

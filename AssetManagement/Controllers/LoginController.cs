@@ -24,7 +24,7 @@ namespace AssetManagement.Controllers
         public ActionResult<string> Login([FromBody] LoginRequestDto dto)
         {
             var user = _context.Users
-                .Include(u => u.Role) // ✅ Eagerly load the Role
+                .Include(u => u.Role) 
                 .FirstOrDefault(u => u.Username == dto.Username && u.PasswordHash == dto.Password);
 
             if (user == null)

@@ -5,7 +5,7 @@ using AssetManagement.DTOs.User;
 
 namespace AssetManagement.Controllers
 {
-    [Authorize] // All actions require authentication
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -17,13 +17,13 @@ namespace AssetManagement.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllUser")]
         public ActionResult<List<UserViewDto>> GetAllUsers()
         {
             return _userService.GetAllUsers();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetUserById/{id}")]
         public ActionResult<UserViewDto> GetUserById(int id)
         {
             var user = _userService.GetUserById(id);
@@ -31,22 +31,22 @@ namespace AssetManagement.Controllers
             return user;
         }
 
-        [HttpGet("by-role/{roleId}")]
+        [HttpGet("GetUserByRoleId/{roleId}")]
         public ActionResult<List<UserViewDto>> GetUsersByRoleId(int roleId)
         {
             return _userService.GetUsersByRoleId(roleId);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")] // Only Admins can create users
+        [HttpPost("CreateUser")]
+        [Authorize(Roles = "Admin")] 
         public ActionResult<string> CreateUser(UserCreateDto userDto)
         {
             var result = _userService.CreateUser(userDto);
             return Ok(result);
         }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")] // Only Admins can delete users
+        [HttpDelete("DeleteUser/{id}")]
+        [Authorize(Roles = "Admin")] 
         public ActionResult<string> DeleteUser(int id)
         {
             var result = _userService.DeleteUserById(id);

@@ -20,7 +20,7 @@ namespace AssetManagement.Helpers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role)  // ✅ Required if you use [Authorize(Roles = "Admin")]
+                new Claim(ClaimTypes.Role, role)  
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

@@ -7,7 +7,7 @@ namespace AssetManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // All endpoints in this controller are for Admin only
+    [Authorize(Roles = "Admin")] 
     public class ServiceRequestsController : ControllerBase
     {
         private readonly IServiceRequestService _serviceRequestService;
@@ -17,13 +17,13 @@ namespace AssetManagement.Controllers
             _serviceRequestService = serviceRequestService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllRequest")]
         public ActionResult<List<ServiceRequestDto>> GetAllRequests()
         {
             return _serviceRequestService.GetAllRequests();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetRequestById{id}")]
         public ActionResult<ServiceRequestDto> GetRequestById(int id)
         {
             var request = _serviceRequestService.GetRequestById(id);
@@ -31,25 +31,25 @@ namespace AssetManagement.Controllers
             return request;
         }
 
-        [HttpGet("by-user/{userId}")]
+        [HttpGet("GetRequestByUserId/{userId}")]
         public ActionResult<List<ServiceRequestDto>> GetRequestsByUserId(int userId)
         {
             return _serviceRequestService.GetRequestsByUserId(userId);
         }
 
-        [HttpPost]
+        [HttpPost("CreateRequest")]
         public ActionResult<string> CreateRequest(ServiceRequestDto dto)
         {
             return _serviceRequestService.CreateRequest(dto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateRequest{id}")]
         public ActionResult<string> UpdateRequest(int id, ServiceRequestDto dto)
         {
             return _serviceRequestService.UpdateRequestById(id, dto);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteRequest{id}")]
         public ActionResult<string> DeleteRequest(int id)
         {
             return _serviceRequestService.DeleteRequestById(id);

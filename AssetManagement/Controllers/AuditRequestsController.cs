@@ -7,7 +7,7 @@ namespace AssetManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // 🔐 Restrict all endpoints to Admin only
+    [Authorize(Roles = "Admin")]
     public class AuditRequestsController : ControllerBase
     {
         private readonly IAuditRequestService _auditRequestService;
@@ -17,13 +17,13 @@ namespace AssetManagement.Controllers
             _auditRequestService = auditRequestService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllAudit")]
         public ActionResult<List<AuditRequestDto>> GetAllAuditRequests()
         {
             return _auditRequestService.GetAllAuditRequests();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetAuditByAuditId/{id}")]
         public ActionResult<AuditRequestDto> GetAuditRequestById(int id)
         {
             var audit = _auditRequestService.GetAuditRequestById(id);
@@ -31,25 +31,25 @@ namespace AssetManagement.Controllers
             return audit;
         }
 
-        [HttpGet("by-user/{userId}")]
+        [HttpGet("GetAuditByUserId/{userId}")]
         public ActionResult<List<AuditRequestDto>> GetAuditRequestsByUserId(int userId)
         {
             return _auditRequestService.GetAuditRequestsByUserId(userId);
         }
 
-        [HttpPost]
+        [HttpPost("CreateAudit")]
         public ActionResult<string> CreateAuditRequest(AuditRequestDto dto)
         {
             return _auditRequestService.CreateAuditRequest(dto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateAudit/{id}")]
         public ActionResult<string> UpdateAuditRequest(int id, AuditRequestDto dto)
         {
             return _auditRequestService.UpdateAuditRequestById(id, dto);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteAudit/{id}")]
         public ActionResult<string> DeleteAuditRequest(int id)
         {
             return _auditRequestService.DeleteAuditRequestById(id);
