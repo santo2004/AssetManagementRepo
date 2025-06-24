@@ -2,15 +2,15 @@
 {
     public class ServiceRequest
     {
-        public int RequestId { get; set; }
-        public int? UserId { get; set; }
-        public int? AssetId { get; set; }
-        public string? Description { get; set; }
-        public string? IssueType { get; set; }
-        public string? Status { get; set; }
-        public DateTime? RequestedDate { get; set; }
-        public DateTime? ResolvedDate { get; set; }
-        public virtual Asset? Asset { get; set; }
-        public virtual User? User { get; set; }
+        public int ServiceRequestId { get; set; }
+        public int AssetId { get; set; }
+        public int UserId { get; set; }
+        public DateOnly RequestDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+        public string IssueType { get; set; }  // Malfunction, Repair
+        public string Description { get; set; }
+        public string Status { get; set; }     // Pending, InProgress, Completed, Rejected
+        public DateOnly? ResolvedDate { get; set; }
+        public Asset Asset { get; set; }
+        public User User { get; set; }
     }
 }
