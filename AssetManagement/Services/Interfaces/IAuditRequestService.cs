@@ -11,5 +11,9 @@ namespace AssetManagement.Services.Interfaces
         string CreateAuditRequest(AuditRequestDto auditDto);
         string UpdateAuditRequestById(int auditRequestId, AuditRequestDto updatedDto);
         string DeleteAuditRequestById(int auditRequestId);
+
+        // Optional helper methods
+        string AutoCreateAudit(int assetId, int userId, string status, string comment = "");
+        string MarkAuditInProgress(int auditRequestId);
     }
 }

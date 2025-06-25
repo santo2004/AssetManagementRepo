@@ -60,15 +60,15 @@ namespace AssetManagement.Services.Implementations
                 }).ToList();
         }
 
-        public string CreateAuditRequest(AuditRequestDto auditDto)
+        public string CreateAuditRequest(AuditRequestDto dto)
         {
             var audit = new AuditRequest
             {
-                UserId = auditDto.UserId,
-                AssetId = auditDto.AssetId,
-                Status = auditDto.AuditStatus,
-                Comments = auditDto.Comments,
-                VerifiedDate = auditDto.AuditDate
+                UserId = dto.UserId,
+                AssetId = dto.AssetId,
+                Status = dto.AuditStatus,
+                Comments = dto.Comments,
+                VerifiedDate = dto.AuditDate
             };
 
             _context.AuditRequests.Add(audit);
@@ -76,29 +76,60 @@ namespace AssetManagement.Services.Implementations
             return "Audit request created.";
         }
 
-        public string UpdateAuditRequestById(int auditRequestId, AuditRequestDto updatedDto)
+        public string UpdateAuditRequestById(int id, AuditRequestDto dto)
         {
-            var audit = _context.AuditRequests.FirstOrDefault(a => a.AuditRequestId == auditRequestId);
+            var audit = _context.AuditRequests.FirstOrDefault(a => a.AuditRequestId == id);
             if (audit == null) return "Audit request not found.";
 
-            audit.UserId = updatedDto.UserId;
-            audit.AssetId = updatedDto.AssetId;
-            audit.Status = updatedDto.AuditStatus;
-            audit.Comments = updatedDto.Comments;
-            audit.VerifiedDate = updatedDto.AuditDate;
+            audit.UserId = dto.UserId;
+            audit.AssetId = dto.AssetId;
+            audit.Status = dto.AuditStatus;
+            audit.Comments = dto.Comments;
+            audit.VerifiedDate = dto.AuditDate;
 
             _context.SaveChanges();
             return "Audit request updated.";
         }
 
-        public string DeleteAuditRequestById(int auditRequestId)
+        public string DeleteAuditRequestById(int id)
         {
-            var audit = _context.AuditRequests.FirstOrDefault(a => a.AuditRequestId == auditRequestId);
+            var audit = _context.AuditRequests.FirstOrDefault(a => a.AuditRequestId == id);
             if (audit == null) return "Audit request not found.";
 
             _context.AuditRequests.Remove(audit);
             _context.SaveChanges();
             return "Audit request deleted.";
+        }
+
+        // ✅ Automatically create an audit (used by AssetService, EmployeeAssetService, etc.)
+        public string AutoCreateAudit(int assetId, int userId, string status, string comment = "")
+        {
+            var audit = new AuditRequest
+            {
+                AssetId = assetId,
+                UserId = userId,
+                Status = status, // Requested, Verified, Rejected, Returned
+                Comments = comment,
+                VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+
+            _context.AuditRequests.Add(audit);
+            _context.SaveChanges();
+
+            return "Audit auto-logged.";
+        }
+
+        // ✅ To manually mark audit as "In Audit"
+        public string MarkAuditInProgress(int auditRequestId)
+        {
+            var audit = _context.AuditRequests.FirstOrDefault(a => a.AuditRequestId == auditRequestId);
+            if (audit == null) return "Audit not found.";
+
+            audit.Status = "In Audit";
+            audit.VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            _context.SaveChanges();
+
+            return "Audit marked as In Audit.";
         }
     }
 }

@@ -46,6 +46,7 @@ INSERT INTO AuditRequests (AssetId, UserId, RequestDate, Status, Comments, Verif
 SELECT * FROM Roles;
 SELECT * FROM Users;
 SELECT * FROM Assets;
+SELECT * FROM AssetRequests;
 SELECT * FROM EmployeeAssets;
 SELECT * FROM ServiceRequests;
 SELECT * FROM AuditRequests;
@@ -89,3 +90,7 @@ ALTER COLUMN RequestDate DATE;
 
 ALTER TABLE AuditRequests
 ALTER COLUMN VerifiedDate DATE;
+
+UPDATE Assets
+SET Quantity = 5
+WHERE AssetId = 10;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AssetManagement.Services.Interfaces;
-using AssetManagement.DTOs;
+using AssetManagement.DTOs.Asset;
 
 namespace AssetManagement.Controllers
 {

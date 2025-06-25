@@ -1,5 +1,5 @@
 ﻿using AssetManagement.Data;
-using AssetManagement.DTOs;
+using AssetManagement.DTOs.Asset;
 using AssetManagement.Models;
 using AssetManagement.Services.Interfaces;
 using System.Collections.Generic;
@@ -10,10 +10,14 @@ namespace AssetManagement.Services.Implementations
     public class AssetService : IAssetService
     {
         private readonly AppDbContext _context;
+        private readonly IAuditRequestService _auditService;
+        private readonly IEmployeeAssetService _employeeAssetService;
 
-        public AssetService(AppDbContext context)
+        public AssetService(AppDbContext context, IAuditRequestService auditService, IEmployeeAssetService employeeAssetService)
         {
             _context = context;
+            _auditService = auditService;
+            _employeeAssetService = employeeAssetService;
         }
 
         public List<AssetDto> GetAllAssets()
@@ -22,7 +26,8 @@ namespace AssetManagement.Services.Implementations
             {
                 AssetId = a.AssetId,
                 AssetName = a.AssetName,
-                Status = a.Status
+                Status = a.Status,
+                Quantity = a.Quantity
             }).ToList();
         }
 
@@ -35,7 +40,8 @@ namespace AssetManagement.Services.Implementations
             {
                 AssetId = asset.AssetId,
                 AssetName = asset.AssetName,
-                Status = asset.Status
+                Status = asset.Status,
+                Quantity = asset.Quantity
             };
         }
 
@@ -47,7 +53,8 @@ namespace AssetManagement.Services.Implementations
                 {
                     AssetId = a.AssetId,
                     AssetName = a.AssetName,
-                    Status = a.Status
+                    Status = a.Status,
+                    Quantity = a.Quantity
                 }).ToList();
         }
 
@@ -56,7 +63,8 @@ namespace AssetManagement.Services.Implementations
             var asset = new Asset
             {
                 AssetName = dto.AssetName,
-                Status = dto.Status
+                Status = dto.Status,
+                Quantity = dto.Quantity
             };
 
             _context.Assets.Add(asset);
@@ -71,6 +79,7 @@ namespace AssetManagement.Services.Implementations
 
             asset.AssetName = dto.AssetName;
             asset.Status = dto.Status;
+            asset.Quantity = dto.Quantity;
 
             _context.SaveChanges();
             return "Asset updated successfully.";
@@ -91,11 +100,24 @@ namespace AssetManagement.Services.Implementations
             var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
             if (asset == null) return "Asset not found.";
 
-            if (asset.Status != "Available") return "Asset is not available.";
+            var assetReq = new AssetRequest
+            {
+                AssetId = assetId,
+                UserId = userId,
+                Status = "Requested"
+            };
+            _context.AssetRequests.Add(assetReq);
 
-            asset.Status = "Requested";
+            var audit = new AuditRequest
+            {
+                AssetId = assetId,
+                UserId = userId,
+                Status = "Requested",
+                RequestDate = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+            _context.AuditRequests.Add(audit);
+
             _context.SaveChanges();
-
             return "Asset request submitted.";
         }
 
@@ -107,67 +129,64 @@ namespace AssetManagement.Services.Implementations
                 {
                     AssetId = a.AssetId,
                     AssetName = a.AssetName,
-                    Status = a.Status
+                    Status = a.Status,
+                    Quantity = a.Quantity
                 }).ToList();
         }
 
-        public string AssignAssetToUser(int assetId, int userId)
+        public string AssignAssetToUser(int assetRequestId, int userId)
         {
-            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
-            if (asset == null) return "Asset not found.";
+            var request = _context.AssetRequests.FirstOrDefault(r => r.AssetRequestId == assetRequestId);
+            if (request == null) return "Request not found.";
 
-            if (asset.Status != "Requested") return "Asset was not requested.";
+            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == request.AssetId);
+            if (asset == null || asset.Quantity <= 0) return "Asset not available.";
 
-            asset.Status = "Allocated";
+            asset.Quantity--;
+            asset.Status = asset.Quantity == 0 ? "OutOfStock" : "Available";
+            request.Status = "Assigned";
 
-            var employeeAsset = new EmployeeAsset
+            var audit = new AuditRequest
             {
-                AssetId = assetId,
-                UserId = userId,
+                AssetId = request.AssetId,
+                UserId = request.UserId,
+                Status = "Verified",
+                VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+            _context.AuditRequests.Add(audit);
+
+            var allocation = new EmployeeAsset
+            {
+                AssetId = request.AssetId,
+                UserId = request.UserId,
                 AssignedDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Status = "Allocated"
             };
+            _context.EmployeeAssets.Add(allocation);
 
-            _context.EmployeeAssets.Add(employeeAsset);
             _context.SaveChanges();
-
-            return "Asset assigned to user.";
+            return "Asset assigned successfully.";
         }
 
-        public string RejectAssetRequest(int assetId, int userId, string comments)
+        public string RejectAssetRequest(int assetRequestId, int userId, string comment)
         {
-            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
-            if (asset == null) return "Asset not found.";
+            var request = _context.AssetRequests.FirstOrDefault(r => r.AssetRequestId == assetRequestId);
+            if (request == null) return "Request not found.";
 
-            if (asset.Status != "Requested") return "Asset was not requested.";
+            request.Status = "Rejected";
 
-            // Reset the asset status
-            asset.Status = "Available";
-
-            // Log in audit request
             var audit = new AuditRequest
             {
-                AssetId = assetId,
-                UserId = userId,
-                Comments = comments,
+                AssetId = request.AssetId,
+                UserId = request.UserId,
                 Status = "Rejected",
+                Comments = comment,
                 VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
-
             _context.AuditRequests.Add(audit);
+
             _context.SaveChanges();
-
-            return "Asset request rejected and logged.";
-        }
-
-        private readonly IAuditRequestService _auditService;
-        private readonly IEmployeeAssetService _employeeAssetService;
-
-        public AssetService(AppDbContext context, IAuditRequestService auditService, IEmployeeAssetService employeeAssetService)
-        {
-            _context = context;
-            _auditService = auditService;
-            _employeeAssetService = employeeAssetService;
+            return "Asset request rejected.";
         }
     }
 }

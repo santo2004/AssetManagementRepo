@@ -66,22 +66,21 @@ namespace AssetManagement.Services.Implementations
                 }).ToList();
         }
 
-        public string CreateRequest(ServiceRequestDto requestDto)
+        public string CreateRequest(ServiceRequestDto dto)
         {
-            var req = new ServiceRequest
+            var service = new ServiceRequest
             {
-                UserId = requestDto.UserId,
-                AssetId = requestDto.AssetId,
-                Description = requestDto.Description,
-                IssueType = requestDto.IssueType,
-                Status = requestDto.Status,
-                RequestDate = requestDto.RequestedDate,
-                ResolvedDate = requestDto.ResolvedDate
+                UserId = dto.UserId,
+                AssetId = dto.AssetId,
+                Description = dto.Description,
+                IssueType = dto.IssueType,
+                Status = "Under Service", // default
+                RequestDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
 
-            _context.ServiceRequests.Add(req);
+            _context.ServiceRequests.Add(service);
             _context.SaveChanges();
-            return "Service request created.";
+            return "Service request created and marked as Under Service.";
         }
 
         public string UpdateRequestById(int requestId, ServiceRequestDto dto)
@@ -89,12 +88,9 @@ namespace AssetManagement.Services.Implementations
             var req = _context.ServiceRequests.FirstOrDefault(r => r.ServiceRequestId == requestId);
             if (req == null) return "Service request not found.";
 
-            req.UserId = dto.UserId;
-            req.AssetId = dto.AssetId;
             req.Description = dto.Description;
             req.IssueType = dto.IssueType;
             req.Status = dto.Status;
-            req.RequestDate = dto.RequestedDate;
             req.ResolvedDate = dto.ResolvedDate;
 
             _context.SaveChanges();
@@ -109,6 +105,41 @@ namespace AssetManagement.Services.Implementations
             _context.ServiceRequests.Remove(req);
             _context.SaveChanges();
             return "Service request deleted.";
+        }
+
+        public string MarkAsUnderService(int requestId)
+        {
+            var req = _context.ServiceRequests.FirstOrDefault(r => r.ServiceRequestId == requestId);
+            if (req == null) return "Request not found.";
+
+            req.Status = "Under Service";
+            _context.SaveChanges();
+            return "Service marked as Under Service.";
+        }
+
+        public string MarkAsReturned(int requestId)
+        {
+            var req = _context.ServiceRequests.FirstOrDefault(r => r.ServiceRequestId == requestId);
+            if (req == null) return "Request not found.";
+
+            req.Status = "Returned";
+            req.ResolvedDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            _context.SaveChanges();
+            return "Service marked as Returned.";
+        }
+
+        public string RejectRequest(int requestId, string reason)
+        {
+            var req = _context.ServiceRequests.FirstOrDefault(r => r.ServiceRequestId == requestId);
+            if (req == null) return "Request not found.";
+
+            req.Status = "Rejected";
+            req.ResolvedDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            req.Description += $" | Rejected Reason: {reason}";
+
+            _context.SaveChanges();
+            return "Service request rejected.";
         }
     }
 }

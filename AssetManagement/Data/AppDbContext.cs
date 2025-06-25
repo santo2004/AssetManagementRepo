@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore; 
+﻿using Microsoft.EntityFrameworkCore;
 using AssetManagement.Models;
 
 namespace AssetManagement.Data
 {
-    public class AppDbContext : DbContext 
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -13,5 +13,6 @@ namespace AssetManagement.Data
         public DbSet<EmployeeAsset> EmployeeAssets { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
         public DbSet<AuditRequest> AuditRequests { get; set; }
+        public DbSet<AssetRequest> AssetRequests { get; set; }
     }
 }

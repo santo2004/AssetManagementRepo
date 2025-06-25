@@ -54,5 +54,23 @@ namespace AssetManagement.Controllers
         {
             return _serviceRequestService.DeleteRequestById(id);
         }
+
+        [HttpPost("MarkUnderService/{id}")]
+        public ActionResult<string> MarkUnderService(int id)
+        {
+            return _serviceRequestService.MarkAsUnderService(id);
+        }
+
+        [HttpPost("MarkReturned/{id}")]
+        public ActionResult<string> MarkReturned(int id)
+        {
+            return _serviceRequestService.MarkAsReturned(id);
+        }
+
+        [HttpPost("RejectRequest/{id}")]
+        public ActionResult<string> RejectRequest(int id, [FromQuery] string reason)
+        {
+            return _serviceRequestService.RejectRequest(id, reason);
+        }
     }
 }

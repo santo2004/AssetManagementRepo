@@ -1,4 +1,5 @@
-﻿using AssetManagement.DTOs;
+﻿using AssetManagement.DTOs.Asset;
+using System.Collections.Generic;
 
 namespace AssetManagement.Services.Interfaces
 {
@@ -10,10 +11,10 @@ namespace AssetManagement.Services.Interfaces
         string CreateAsset(AssetDto assetDto);
         string UpdateAssetById(int assetId, AssetDto assetDto);
         string DeleteAssetById(int assetId);
+
         string RequestAsset(int assetId, int userId);
         List<AssetDto> GetRequestedAssets();
-        string AssignAssetToUser(int assetId, int userId);
-        string RejectAssetRequest(int assetId, int userId, string comments);
-
+        string AssignAssetToUser(int assetRequestId, int userId); // Changed to take assetRequestId
+        string RejectAssetRequest(int assetRequestId, int userId ,string comments);
     }
 }

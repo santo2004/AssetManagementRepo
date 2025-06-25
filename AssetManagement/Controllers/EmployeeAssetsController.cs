@@ -7,7 +7,7 @@ namespace AssetManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] 
+    [Authorize]
     public class EmployeeAssetsController : ControllerBase
     {
         private readonly IEmployeeAssetService _employeeAssetService;
@@ -23,7 +23,7 @@ namespace AssetManagement.Controllers
             return _employeeAssetService.GetAllAllocations();
         }
 
-        [HttpGet("GetAllocationByAllocationId{id}")]
+        [HttpGet("GetAllocationByAllocationId/{id}")]
         public ActionResult<EmployeeAssetDto> GetAllocationById(int id)
         {
             var allocation = _employeeAssetService.GetAllocationById(id);
@@ -49,6 +49,13 @@ namespace AssetManagement.Controllers
         public ActionResult<string> UpdateAllocation(int id, EmployeeAssetDto dto)
         {
             return _employeeAssetService.UpdateAllocationById(id, dto);
+        }
+
+        [HttpPost("ReturnAsset")]
+        [Authorize(Roles = "Employee,Manager")]
+        public ActionResult<string> ReturnAsset([FromQuery] int assetId, [FromQuery] int userId)
+        {
+            return _employeeAssetService.ReturnAsset(assetId, userId);
         }
 
         [HttpDelete("DeleteAllocation/{id}")]

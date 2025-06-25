@@ -54,6 +54,11 @@ namespace AssetManagement.Controllers
         {
             return _auditRequestService.DeleteAuditRequestById(id);
         }
+
+        [HttpPost("MarkInAudit/{id}")]
+        public ActionResult<string> MarkInAudit(int id)
+        {
+            return _auditRequestService.MarkAuditInProgress(id);
+        }
     }
 }
-

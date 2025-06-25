@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace AssetManagement.Services.Implementations
 {
-    public class EmployeeAssetService : IEmployeeAssetService
+    public class EmployeeService : IEmployeeAssetService
     {
         private readonly AppDbContext _context;
 
-        public EmployeeAssetService(AppDbContext context)
+        public EmployeeService(AppDbContext context)
         {
             _context = context;
         }
@@ -89,6 +89,39 @@ namespace AssetManagement.Services.Implementations
 
             _context.SaveChanges();
             return "Allocation updated.";
+        }
+
+        public string ReturnAsset(int assetId, int userId)
+        {
+            var allocation = _context.EmployeeAssets
+                .FirstOrDefault(a => a.AssetId == assetId && a.UserId == userId && a.Status == "Allocated");
+            if (allocation == null) return "No allocated asset found for this user.";
+
+            allocation.Status = "Returned";
+            allocation.ReturnDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            // Update asset quantity and status
+            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
+            if (asset != null)
+            {
+                asset.Quantity += 1;
+                asset.Status = "Available";
+            }
+
+            // Update audit request as "Returned" if exists
+            var audit = _context.AuditRequests
+                .Where(a => a.AssetId == assetId && a.UserId == userId)
+                .OrderByDescending(a => a.AuditRequestId)
+                .FirstOrDefault();
+
+            if (audit != null)
+            {
+                audit.Status = "Returned";
+                audit.VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            }
+
+            _context.SaveChanges();
+            return "Asset returned successfully.";
         }
 
         public string DeleteAllocationById(int allocationId)
