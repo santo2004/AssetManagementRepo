@@ -7,7 +7,7 @@ namespace AssetManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] 
+    [Authorize] 
     public class ServiceRequestsController : ControllerBase
     {
         private readonly IServiceRequestService _serviceRequestService;
@@ -37,23 +37,27 @@ namespace AssetManagement.Controllers
             return _serviceRequestService.GetRequestsByUserId(userId);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateRequest")]
         public ActionResult<string> CreateRequest(ServiceRequestDto dto)
         {
             return _serviceRequestService.CreateRequest(dto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateRequest{id}")]
         public ActionResult<string> UpdateRequest(int id, ServiceRequestDto dto)
         {
             return _serviceRequestService.UpdateRequestById(id, dto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteRequest{id}")]
         public ActionResult<string> DeleteRequest(int id)
         {
             return _serviceRequestService.DeleteRequestById(id);
         }
+
 
         [HttpPost("MarkUnderService/{id}")]
         public ActionResult<string> MarkUnderService(int id)

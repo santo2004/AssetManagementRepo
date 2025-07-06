@@ -2,6 +2,7 @@
 using AssetManagement.DTOs;
 using AssetManagement.Models;
 using AssetManagement.Services.Interfaces;
+using Azure.Core;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,7 +69,7 @@ namespace AssetManagement.Services.Implementations
 
         public string CreateRequest(ServiceRequestDto dto)
         {
-            var service = new ServiceRequest
+            var request = new ServiceRequest
             {
                 UserId = dto.UserId,
                 AssetId = dto.AssetId,
@@ -78,7 +79,20 @@ namespace AssetManagement.Services.Implementations
                 RequestDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
 
-            _context.ServiceRequests.Add(service);
+            // Create service request
+            _context.ServiceRequests.Add(request);
+
+            // Also create audit request for this asset
+            _context.AuditRequests.Add(new AuditRequest
+            {
+                AssetId = request.AssetId,
+                UserId = request.UserId,
+                Status = "In Audit",  // or "Requested"
+                RequestDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Comments = "Service requested"
+            });
+
+            _context.ServiceRequests.Add(request);
             _context.SaveChanges();
             return "Service request created and marked as Under Service.";
         }

@@ -5,28 +5,24 @@ INSERT INTO Roles (RoleName) VALUES
 ('Manager'),
 ('Employee');
 
-INSERT INTO Users (Username, PasswordHash, FullName, Gender, Email, PhoneNumber, Address, RoleId, CreatedAt, IsActive) VALUES 
-('Santo', 'admin123', 'Santo T', 'Male', 'santo@admin.com', '9876543210', 'Chennai', 1, GETDATE(), 1),
-('Viji', 'manager123', 'Viji M', 'Female', 'viji@manager.com', '9876543211', 'Coimbatore', 2, GETDATE(), 1),
-('Shruthi', 'pass123', 'Shruthi C', 'Female', 'shruthi@emp.com', '9876543212', 'Madurai', 3, GETDATE(), 1),
-('Nitish', 'pass456', 'Nitish S P', 'Male', 'nitish@emp.com', '9876543213', 'Trichy', 3, GETDATE(), 1),
-('Roger', 'pass789', 'Roger A', 'Male', 'roger@emp.com', '9876543214', 'Salem', 3, GETDATE(), 0),
-('Lokesh', 'manager456', 'Lokesh S', 'Male', 'lokesh@manager.com', '9574643237', 'Pondicherry', 2, GETDATE(), 0)
+INSERT INTO Users (Username, PasswordHash, FullName, Gender, Email, PhoneNumber, Address, RoleId) VALUES 
+('Santo', 'admin123', 'Santo T', 'Male', 'santo@admin.com', '9876543210', 'Chennai', 1),
+('Viji', 'manager123', 'Viji M', 'Female', 'viji@manager.com', '9876543211', 'Coimbatore', 2),
+('Shruthi', 'manager456', 'Shruthi C', 'Female', 'shruthi@manager.com', '9876543212', 'Madurai', 2),
+('Nitish', 'pass123', 'Nitish S P', 'Male', 'nitish@emp.com', '9876543213', 'Trichy', 3),
+('Roger', 'pass789', 'Roger A', 'Male', 'roger@emp.com', '9876543214', 'Salem', 3),
+('Lokesh', 'manager456', 'Lokesh S', 'Male', 'lokesh@manager.com', '9574643237', 'Pondicherry', 2)
 
+INSERT INTO Assets (AssetName,Status, Quantity) VALUES 
+('Dell Latitude 5420','Available', 3),
+('Samsung 24-inch Monitor', 'Available', 4),
+('Logitech MX Master 3',  'Available', 2),
+('Mechanical Keyboard',  'Available', 1), 
+('HP LaserJet 1020', 'Out of Stock', 0);
 
-INSERT INTO Assets (AssetNo, AssetName, AssetModel, ManufacturingDate, ExpiryDate, AssetValue, Status) VALUES
-('A001', 'Dell Laptop', 'Inspiron 15', '2022-01-01', '2025-01-01', 55000, 'Available'),
-('A002', 'HP Laptop', 'Pavilion x360', '2021-06-01', '2024-06-01', 60000, 'Allocated'),
-('A003', 'Office Chair', 'ErgoSeat', '2020-03-01', '2028-03-01', 5000, 'Available'),
-('A004', 'Monitor', 'Samsung 24"', '2023-01-01', '2027-01-01', 12000, 'UnderService'),
-('A005', 'Printer', 'HP LaserJet', '2020-10-01', '2026-10-01', 8000, 'Available');
 
 INSERT INTO EmployeeAssets (UserId, AssetId, AssignedDate, ReturnDate, Status) VALUES
-(3, 2, GETDATE(), NULL, 'Allocated'),
-(4, 3, '2024-01-15', NULL, 'Allocated'),
-(5, 4, '2024-02-20', NULL, 'InAudit'),
-(3, 5, '2023-05-10', '2024-03-01', 'Returned'),
-(4, 1, '2024-06-01', NULL, 'Allocated');
+(2, 1, GETDATE(), NULL, 'Allocated')
 
 INSERT INTO ServiceRequests (AssetId, UserId, RequestDate, IssueType, Description, Status, ResolvedDate) VALUES
 (2, 3, GETDATE(), 'Repair', 'Battery issue', 'Pending', NULL),
@@ -51,6 +47,35 @@ SELECT * FROM EmployeeAssets;
 SELECT * FROM ServiceRequests;
 SELECT * FROM AuditRequests;
 
+-- Clear Users table and reset ID
+DELETE FROM Users;
+DBCC CHECKIDENT ('Users', RESEED, 0);
+
+-- Clear Roles table and reset ID
+DELETE FROM Roles;
+DBCC CHECKIDENT ('Roles', RESEED, 0);
+
+-- Clear Assets table and reset ID
+DELETE FROM Assets;
+DBCC CHECKIDENT ('Assets', RESEED, 0);
+
+-- Clear EmployeeAssets table and reset ID
+DELETE FROM EmployeeAssets;
+DBCC CHECKIDENT ('EmployeeAssets', RESEED, 0);
+
+-- Clear AssetRequests table and reset ID
+DELETE FROM AssetRequests;
+DBCC CHECKIDENT ('AssetRequests', RESEED, 0);
+
+-- Clear AuditRequests table and reset ID
+DELETE FROM AuditRequests;
+DBCC CHECKIDENT ('AuditRequests', RESEED, 0);
+
+-- Clear ServiceRequests table and reset ID
+DELETE FROM ServiceRequests;
+DBCC CHECKIDENT ('ServiceRequests', RESEED, 0);
+
+
 ALTER TABLE Users
 DROP COLUMN CreatedAt;
 
@@ -65,7 +90,10 @@ DROP COLUMN AssetNo,
              AssetValue; 
 UPDATE Users
 SET RoleId = 2
-WHERE UserId = 5;
+WHERE UserId = 3;
+UPDATE Users
+SET PasswordHash = 'manager789'
+WHERE UserId = 6;
 UPDATE Users
 SET PasswordHash = 'manager789'
 WHERE UserId = 5;

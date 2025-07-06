@@ -26,6 +26,23 @@ namespace AssetManagement.Services.Implementations
                 RequestDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
 
+            // 1. Add to EmployeeAsset table
+            _context.EmployeeAssets.Add(new EmployeeAsset
+            {
+                UserId = request.UserId,
+                AssetId = request.AssetId,
+                AssignedDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Status = "Allocated"
+            });
+
+            // 2. Update Asset table
+            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == request.AssetId);
+            if (asset != null)
+            {
+                asset.Quantity -= 1;
+                asset.Status = asset.Quantity == 0 ? "Out of Stock" : "Available";
+            }
+
             _context.AssetRequests.Add(request);
             _context.SaveChanges();
 

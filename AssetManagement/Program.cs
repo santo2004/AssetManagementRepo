@@ -56,6 +56,7 @@ namespace AssetManagement
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IAssetService, AssetService>();
+            builder.Services.AddScoped<IAssetRequestService, AssetRequestService>();
             builder.Services.AddScoped<IEmployeeAssetService, EmployeeService>();
             builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
             builder.Services.AddScoped<IAuditRequestService, AuditRequestService>();
