@@ -31,8 +31,6 @@ namespace AssetManagement
             builder.Services.AddScoped<IAuditRequestService, AuditRequestService>();
             builder.Services.AddScoped<JwtService>();
 
-            builder.Services.AddSwaggerGen();
-
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AssetManagement API", Version = "v1" });
