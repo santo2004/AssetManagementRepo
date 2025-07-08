@@ -1,4 +1,5 @@
 ﻿using AssetManagement.Data;
+using AssetManagement.DTOs;
 using AssetManagement.DTOs.Asset;
 using AssetManagement.Models;
 using AssetManagement.Services.Interfaces;
@@ -136,36 +137,42 @@ namespace AssetManagement.Services.Implementations
 
         public string AssignAssetToUser(int assetRequestId, int userId)
         {
-            var request = _context.AssetRequests.FirstOrDefault(r => r.AssetRequestId == assetRequestId);
-            if (request == null) return "Request not found.";
+            var assetRequest = _context.AssetRequests.FirstOrDefault(r => r.AssetRequestId == assetRequestId);
+            if (assetRequest == null || assetRequest.Status != "Requested")
+                return "Invalid request";
 
-            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == request.AssetId);
-            if (asset == null || asset.Quantity <= 0) return "Asset not available.";
-
-            asset.Quantity--;
-            asset.Status = asset.Quantity == 0 ? "OutOfStock" : "Available";
-            request.Status = "Assigned";
-
-            var audit = new AuditRequest
+            var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetRequest.AssetId);
+            if (asset == null || asset.Quantity <= 0)
             {
-                AssetId = request.AssetId,
-                UserId = request.UserId,
-                Status = "Verified",
-                VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow)
-            };
-            _context.AuditRequests.Add(audit);
+                assetRequest.Status = "Rejected";
+                _context.SaveChanges();
+                return "Asset not available";
+            }
 
-            var allocation = new EmployeeAsset
+            asset.Quantity -= 1;
+            asset.Status = asset.Quantity == 0 ? "Out of Stock" : "Available";
+            assetRequest.Status = "Assigned";
+
+            // ✅ Use AutoCreateAudit or CreateAuditRequest correctly
+            _auditService.CreateAuditRequest(new AuditRequestDto
             {
-                AssetId = request.AssetId,
-                UserId = request.UserId,
-                AssignedDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                Status = "Allocated"
-            };
-            _context.EmployeeAssets.Add(allocation);
+                UserId = userId,
+                AssetId = asset.AssetId,
+                AuditStatus = "Assigned",
+                Comments = "Asset assigned via system",
+                AuditDate = DateOnly.FromDateTime(DateTime.Now)
+            });
+
+            _employeeAssetService.CreateAllocation(new EmployeeAssetDto
+            {
+                UserId = userId,
+                AssetId = asset.AssetId,
+                Status = "Allocated",
+                AssignedDate = DateOnly.FromDateTime(DateTime.Now)
+            });
 
             _context.SaveChanges();
-            return "Asset assigned successfully.";
+            return "Asset assigned successfully";
         }
 
         public string RejectAssetRequest(int assetRequestId, int userId, string comment)

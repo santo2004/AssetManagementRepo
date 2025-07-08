@@ -5,8 +5,8 @@ using AssetManagement.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace AssetManagement
 {
@@ -16,21 +16,9 @@ namespace AssetManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Controllers & Swagger
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IRoleService, RoleService>();
-            builder.Services.AddScoped<IAssetService, AssetService>();
-            builder.Services.AddScoped<IAssetRequestService, AssetRequestService>();
-            builder.Services.AddScoped<IEmployeeAssetService, EmployeeService>();
-            builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
-            builder.Services.AddScoped<IAuditRequestService, AuditRequestService>();
-            builder.Services.AddScoped<JwtService>();
-
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AssetManagement API", Version = "v1" });
@@ -61,6 +49,21 @@ namespace AssetManagement
                 });
             });
 
+            // Database Context
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Dependency Injection
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IAssetService, AssetService>();
+            builder.Services.AddScoped<IAssetRequestService, AssetRequestService>();
+            builder.Services.AddScoped<IEmployeeAssetService, EmployeeService>();
+            builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
+            builder.Services.AddScoped<IAuditRequestService, AuditRequestService>();
+            builder.Services.AddScoped<JwtService>();
+
+            // Authentication
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -78,7 +81,19 @@ namespace AssetManagement
                     };
                 });
 
+            // Authorization
             builder.Services.AddAuthorization();
+
+            // Optional: CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             var app = builder.Build();
 
@@ -89,8 +104,10 @@ namespace AssetManagement
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
             app.Run();
         }

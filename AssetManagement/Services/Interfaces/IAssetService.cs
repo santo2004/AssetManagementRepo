@@ -11,7 +11,6 @@ namespace AssetManagement.Services.Interfaces
         string CreateAsset(AssetDto assetDto);
         string UpdateAssetById(int assetId, AssetDto assetDto);
         string DeleteAssetById(int assetId);
-
         string RequestAsset(int assetId, int userId);
         List<AssetDto> GetRequestedAssets();
         string AssignAssetToUser(int assetRequestId, int userId); // Changed to take assetRequestId
