@@ -18,6 +18,19 @@ namespace AssetManagement
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IAssetService, AssetService>();
+            builder.Services.AddScoped<IAssetRequestService, AssetRequestService>();
+            builder.Services.AddScoped<IEmployeeAssetService, EmployeeService>();
+            builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
+            builder.Services.AddScoped<IAuditRequestService, AuditRequestService>();
+            builder.Services.AddScoped<JwtService>();
+
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddSwaggerGen(c =>
@@ -50,18 +63,6 @@ namespace AssetManagement
                 });
             });
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IRoleService, RoleService>();
-            builder.Services.AddScoped<IAssetService, AssetService>();
-            builder.Services.AddScoped<IAssetRequestService, AssetRequestService>();
-            builder.Services.AddScoped<IEmployeeAssetService, EmployeeService>();
-            builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
-            builder.Services.AddScoped<IAuditRequestService, AuditRequestService>();
-            builder.Services.AddScoped<JwtService>();
-
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -90,7 +91,7 @@ namespace AssetManagement
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthentication(); 
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

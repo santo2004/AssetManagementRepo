@@ -22,7 +22,8 @@ INSERT INTO Assets (AssetName,Status, Quantity) VALUES
 
 
 INSERT INTO EmployeeAssets (UserId, AssetId, AssignedDate, ReturnDate, Status) VALUES
-(2, 1, GETDATE(), NULL, 'Allocated')
+--(2, 1, GETDATE(), NULL, 'Allocated')
+(3, 2, GETDATE(), NULL, 'Allocated')
 
 INSERT INTO ServiceRequests (AssetId, UserId, RequestDate, IssueType, Description, Status, ResolvedDate) VALUES
 (2, 3, GETDATE(), 'Repair', 'Battery issue', 'Pending', NULL),
