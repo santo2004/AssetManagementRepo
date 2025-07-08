@@ -1,12 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './Login';
+import Login from 'asset-management-frontend\src\pages\Login.jsx';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        {/* Other routes will be added later */}
       </Routes>
     </Router>
   );
