@@ -1,0 +1,6 @@
+.hover-dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0; 
+  background-color: darkgray;
+  color: white;
+}
