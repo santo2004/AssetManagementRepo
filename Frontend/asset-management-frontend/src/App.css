@@ -1,0 +1,8 @@
+/* src/App.css */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+.navbar .btn-link {
+  cursor: pointer;
+}
