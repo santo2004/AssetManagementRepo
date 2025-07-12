@@ -1,0 +1,30 @@
+/* src/components/Navbar.css */
+.dropdown-hover {
+  position: relative;
+  cursor: pointer;
+  color: white;
+}
+.dropdown-menu-custom {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #343a40;
+  min-width: 180px;
+  z-index: 1000;
+  padding: 0.5rem 0;
+}
+.dropdown-hover:hover .dropdown-menu-custom {
+  display: block;
+}
+.dropdown-item {
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+.dropdown-item:hover {
+  background-color: #495057;
+}

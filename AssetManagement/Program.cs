@@ -89,7 +89,7 @@ namespace AssetManagement
             {
                 options.AddPolicy("AllowAll", builder =>
                 {
-                    builder.AllowAnyOrigin()
+                    builder.WithOrigins("http://localhost:5173/")
                            .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
@@ -104,7 +104,7 @@ namespace AssetManagement
             }
 
             app.UseHttpsRedirection();
-            app.UseCors("AllowAll");
+            app.UseCors("AllowReactApp");
             app.UseAuthentication();
             app.UseAuthorization();
 
