@@ -8,6 +8,9 @@ function Navbar() {
   const { auth, logout } = useContext(AuthContext);
   const role = auth?.user?.role;
 
+  const isAdmin = role === 'Admin';
+  const isUser = role === 'Employee' || role === 'Manager';
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3 mt-3 rounded">
       <span className="navbar-brand">Asset Management</span>
@@ -18,69 +21,87 @@ function Navbar() {
           </button>
         </li>
 
-        {/* Users Dropdown */}
-        <li className="nav-item dropdown">
-          <div className="dropdown-hover nav-link">
-            Users ▾
-            <div className="dropdown-menu-custom">
-              <button className="dropdown-item" onClick={() => navigate('/users/list')}>User List</button>
-              <button className="dropdown-item" onClick={() => navigate('/users/create')}>User Form</button>
-              <button className="dropdown-item" onClick={() => navigate('/users/search')}>User Search</button>
+        {/* Users (Admin only) */}
+        {isAdmin && (
+          <li className="nav-item dropdown">
+            <div className="dropdown-hover nav-link">
+              Users ▾
+              <div className="dropdown-menu-custom">
+                <button className="dropdown-item" onClick={() => navigate('/users/list')}>User List</button>
+                <button className="dropdown-item" onClick={() => navigate('/users/create')}>User Form</button>
+                <button className="dropdown-item" onClick={() => navigate('/users/search')}>User Search</button>
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        )}
 
-        {/* Assets Dropdown */}
-        <li className="nav-item dropdown">
-          <div className="dropdown-hover nav-link">
-            Assets ▾
-            <div className="dropdown-menu-custom">
-              <button className="dropdown-item" onClick={() => navigate('/assets/list')}>Asset List</button>
-              <button className="dropdown-item" onClick={() => navigate('/assets/create')}>Asset Form</button>
-              <button className="dropdown-item" onClick={() => navigate('/assets/search')}>Asset Search</button>
-              <button className="dropdown-item" onClick={() => navigate('/assets/request')}>Request Asset</button>
+        {/* Assets */}
+        {(isAdmin || isUser) && (
+          <li className="nav-item dropdown">
+            <div className="dropdown-hover nav-link">
+              Assets ▾
+              <div className="dropdown-menu-custom">
+                <button className="dropdown-item" onClick={() => navigate('/assets/list')}>Asset List</button>
+                {isAdmin && (
+                  <>
+                    <button className="dropdown-item" onClick={() => navigate('/assets/create')}>Asset Form</button>
+                  </>
+                )}
+                <button className="dropdown-item" onClick={() => navigate('/assets/search')}>Asset Search</button>
+                {isUser && (
+                  <button className="dropdown-item" onClick={() => navigate('/assets/request')}>Request Asset</button>
+                )}
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        )}
 
-        {/* Asset Requests Dropdown */}
-        <li className="nav-item dropdown">
-          <div className="dropdown-hover nav-link">
-            Asset Requests ▾
-            <div className="dropdown-menu-custom">
-              <button className="dropdown-item" onClick={() => navigate('/asset-requests/list')}>View Requests</button>
+        {/* Asset Requests (Admin only) */}
+        {isAdmin && (
+          <li className="nav-item dropdown">
+            <div className="dropdown-hover nav-link">
+              Asset Requests ▾
+              <div className="dropdown-menu-custom">
+                <button className="dropdown-item" onClick={() => navigate('/asset-requests/list')}>View Requests</button>
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        )}
 
-        {/* Employee Assets Dropdown */}
-        <li className="nav-item dropdown">
-          <div className="dropdown-hover nav-link">
-            Employee Assets ▾
-            <div className="dropdown-menu-custom">
-              <button className="dropdown-item" onClick={() => navigate('/employee-assets/list')}>My Allocations</button>
-              <button className="dropdown-item" onClick={() => navigate('/employee-assets/return')}>Return Asset</button>
+        {/* Employee Assets (Employee/Manager only) */}
+        {isUser && (
+          <li className="nav-item dropdown">
+            <div className="dropdown-hover nav-link">
+              Employee Assets ▾
+              <div className="dropdown-menu-custom">
+                <button className="dropdown-item" onClick={() => navigate('/employee-assets/list')}>My Allocations</button>
+                <button className="dropdown-item" onClick={() => navigate('/employee-assets/return')}>Return Asset</button>
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        )}
 
-        {/* ✅ Service Requests Dropdown */}
-        <li className="nav-item dropdown">
-          <div className="dropdown-hover nav-link">
-            Service Requests ▾
-            <div className="dropdown-menu-custom">
-              {/* Common to all users */}
-              <button className="dropdown-item" onClick={() => navigate('/service-request')}>Create Service Request</button>
-              <button className="dropdown-item" onClick={() => navigate('/my-requests')}>My Service Requests</button>
-
-              {/* Admin-only */}
-              {role === 'Admin' && (
-                <button className="dropdown-item" onClick={() => navigate('/admin/requests')}>Manage All Requests</button>
-              )}
+        {/* Service Requests */}
+        {(isUser || isAdmin) && (
+          <li className="nav-item dropdown">
+            <div className="dropdown-hover nav-link">
+              Service Requests ▾
+              <div className="dropdown-menu-custom">
+                {isUser && (
+                  <>
+                    <button className="dropdown-item" onClick={() => navigate('/service-request')}>Create Service Request</button>
+                    <button className="dropdown-item" onClick={() => navigate('/my-requests')}>My Service Requests</button>
+                  </>
+                )}
+                {isAdmin && (
+                  <button className="dropdown-item" onClick={() => navigate('/admin/requests')}>Manage All Requests</button>
+                )}
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        )}
 
+        {/* Logout */}
         <li className="nav-item">
           <button
             className="btn btn-danger nav-link"
