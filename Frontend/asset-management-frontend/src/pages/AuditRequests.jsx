@@ -7,7 +7,7 @@ function AuditRequests() {
     <>
       <Navbar />
       <div className="container mt-4">
-        <h2>Users</h2>
+        <h2>Audit requests</h2>
         <p>Manage audit from here.</p>
       </div>
     </>

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using AssetManagement.Services.Interfaces;
 using AssetManagement.DTOs.User;
+using AssetManagement.Data;
+using AssetManagement.Models;
 
 namespace AssetManagement.Controllers
 {
@@ -18,9 +20,11 @@ namespace AssetManagement.Controllers
         }
 
         [HttpGet("GetAllUser")]
-        public ActionResult<List<UserViewDto>> GetAllUsers()
+        [Authorize]
+        public ActionResult<List<UserViewDto>> GetAllUser()
         {
-            return _userService.GetAllUsers();
+            var users = _userService.GetAllUsers();
+            return Ok(users);
         }
 
         [HttpGet("GetUserById/{id}")]
@@ -45,11 +49,11 @@ namespace AssetManagement.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("DeleteUser/{id}")]
-        [Authorize(Roles = "Admin")] 
+        [HttpPut("DeleteUser/{id}")]
+        [Authorize(Roles = "Admin")]
         public ActionResult<string> DeleteUser(int id)
         {
-            var result = _userService.DeleteUserById(id);
+            var result = _userService.DeleteUserById(id); // This already sets IsDeleted = true
             return Ok(result);
         }
     }

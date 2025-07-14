@@ -19,14 +19,18 @@ namespace AssetManagement.Services.Implementations
 
         public List<UserViewDto> GetAllUsers()
         {
-            return _context.Users.Select(u => new UserViewDto
-            {
-                UserId = u.UserId,
-                Username = u.Username,
-                PhoneNumber = u.PhoneNumber,
-                RoleName = u.Role.RoleName,
-                Email = u.Email
-            }).ToList();
+            return _context.Users
+                .Where(u => !u.IsDeleted)
+                .Include(u => u.Role)
+                .Select(u => new UserViewDto
+                {
+                    UserId = u.UserId,
+                    Username = u.Username,
+                    PhoneNumber = u.PhoneNumber,
+                    RoleName = u.Role.RoleName,
+                    Email = u.Email
+                })
+                .ToList();
         }
 
         public UserViewDto GetUserById(int userId)
@@ -91,12 +95,13 @@ namespace AssetManagement.Services.Implementations
 
         public string DeleteUserById(int userId)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
-            if (user == null) return "User not found.";
+            var user = _context.Users.FirstOrDefault(u => u.UserId == userId && !u.IsDeleted);
+            if (user == null) return "User not found or already deleted.";
 
-            _context.Users.Remove(user);
+            user.IsDeleted = true;
             _context.SaveChanges();
-            return "User deleted.";
+            return "User soft-deleted.";
         }
+
     }
 }

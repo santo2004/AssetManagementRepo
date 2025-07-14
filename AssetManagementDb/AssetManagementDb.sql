@@ -123,3 +123,23 @@ ALTER COLUMN VerifiedDate DATE;
 UPDATE Assets
 SET Quantity = 5
 WHERE AssetId = 10;
+
+UPDATE Assets
+SET ImageUrl = 'https://images-cdn.ubuy.co.in/63b6aff19eff6d406d0aaa47-dell-latitude-5420-laptop-14-fhd.jpg'
+WHERE AssetName = 'Dell Latitude 5420';
+
+UPDATE Assets
+SET ImageUrl = 'https://m.media-amazon.com/images/I/81TjRLHaz1L.jpg'
+WHERE AssetName = 'Samsung 24-inch Monitor';
+
+UPDATE Assets
+SET ImageUrl = 'https://rukminim2.flixcart.com/image/300/300/xif0q/mouse/p/e/g/-original-imahbg3mw94zhfnp.jpeg'
+WHERE AssetName = 'Logitech MX Master 3';
+
+UPDATE Assets
+SET ImageUrl = 'https://images-cdn.ubuy.co.in/633b72e4e0c36838310a04c2-havit-mechanical-keyboard-wired-compact.jpg'
+WHERE AssetName = 'Mechanical Keyboard';
+
+UPDATE Assets
+SET ImageUrl = 'https://ghalibtraders.com/wp-content/uploads/2021/06/1020-4-1.jpg'
+WHERE AssetName = 'HP LaserJet 1020';

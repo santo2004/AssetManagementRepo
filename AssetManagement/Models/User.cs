@@ -11,6 +11,7 @@
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public int RoleId { get; set; }
+        public bool IsDeleted { get; set; } = false;
         //public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         //public bool IsActive { get; set; } = true;
         public Role Role { get; set; }

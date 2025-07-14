@@ -7,8 +7,8 @@ function ServiceRequests() {
     <>
       <Navbar />
       <div className="container mt-4">
-        <h2>Users</h2>
-        <p>Manage asset requests from here.</p>
+        <h2>service requests</h2>
+        <p>Manage service requests from here.</p>
       </div>
     </>
   );

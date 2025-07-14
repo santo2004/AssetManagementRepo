@@ -5,45 +5,68 @@ import Navbar from '../../components/Navbar';
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
+
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('/Users/GetAllUser');
+      const res = await axios.get('/Users/GetAllUser'); // this sends token + credentials
       setUsers(res.data);
-    } catch {
+      console.log(res);
+    } catch (err) {
+      console.error(err);
       alert('Could not fetch users');
     }
   };
+
   const handleDelete = async (id) => {
-    if (window.confirm('Confirm delete?')) {
-      try {
-        await axios.delete(`/Users/DeteletUser/${id}`);
-        alert('Deleted');
-        fetchUsers();
-      } catch {
-        alert('Delete failed');
-      }
+  if (window.confirm('Confirm soft delete?')) {
+    try {
+      await axios.put(`/Users/DeleteUser/${id}`);
+      alert('User soft-deleted');
+      fetchUsers(); // This should fetch non-deleted users
+    } catch (err) {
+      console.error(err);
+      alert('Delete failed');
     }
-  };
-  useEffect(fetchUsers, []);
+  }
+};
+
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <>
       <Navbar />
       <div className="container mt-4">
         <h4>User List</h4>
-        <table className="table table-bordered table-striped">
-          <thead className="table-dark">
-            <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            {users.map(u => (
-              <tr key={u.userId}>
-                <td>{u.userId}</td><td>{u.name}</td><td>{u.email}</td><td>{u.role}</td>
-                <td><button className="btn btn-sm btn-danger" onClick={() => handleDelete(u.userId)}>Delete</button></td>
+        {users.length === 0 ? (
+          <p>No users found.</p>
+        ) : (
+          <table className="table table-bordered table-striped">
+            <thead className="table-dark">
+              <tr>
+                <th>ID</th><th>Username</th><th>Email</th><th>Phone</th><th>Role</th><th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map(u => (
+                <tr key={u.userId}>
+                  <td>{u.userId}</td>
+                  <td>{u.username}</td>
+                  <td>{u.email}</td>
+                  <td>{u.phoneNumber}</td>
+                  <td>{u.roleName}</td>
+                  <td>
+                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(u.userId)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );

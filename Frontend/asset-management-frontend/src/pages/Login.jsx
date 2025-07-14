@@ -3,8 +3,8 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from '../api/axiosInstance';
 
-function Login() {
-  const { auth, login } = useContext(AuthContext); // include login here
+const Login = () => {
+  const { auth, login } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -13,16 +13,16 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post('/Login/login', { username, password }, { responseType: 'text' });
+      const res = await axios.post('/Login/login', { username, password });
 
-      const token = res.data;
+      const { token, user } = res.data;
 
-      if (!token) {
-        alert('Login failed: No token received');
+      if (!token || !user) {
+        alert('Login failed: Missing token or user info');
         return;
       }
 
-      login({ token, username });
+      login({ token, user });
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
@@ -30,7 +30,6 @@ function Login() {
     }
   };
 
-  // Redirect to dashboard if already logged in
   if (auth && auth.token) {
     return <Navigate to="/dashboard" />;
   }
@@ -59,6 +58,6 @@ function Login() {
       </form>
     </div>
   );
-}
+};
 
-export default Login;
+export default Login; // ✅ REQUIRED

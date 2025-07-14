@@ -16,6 +16,16 @@ namespace AssetManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Optional: CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy => policy.WithOrigins("http://localhost:5173")
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader()
+                                    .AllowCredentials());
+            });
+
             // Controllers & Swagger
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -84,17 +94,6 @@ namespace AssetManagement
             // Authorization
             builder.Services.AddAuthorization();
 
-            // Optional: CORS
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", builder =>
-                {
-                    builder.WithOrigins("http://localhost:5173/")
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
-            });
-
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -104,7 +103,8 @@ namespace AssetManagement
             }
 
             app.UseHttpsRedirection();
-            app.UseCors("AllowReactApp");
+            app.UseCors("AllowFrontend");   
+
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -6,7 +6,7 @@
         public string AssetName { get; set; }
         public string Status { get; set; } // Available, Allocated, OutOfStock
         public int Quantity { get; set; }  // New column for quantity
-
+        public string? ImageUrl { get; set; } // Optional field for image path or URL
         public ICollection<EmployeeAsset> EmployeeAssets { get; set; } = new List<EmployeeAsset>();
         public ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
         public ICollection<AuditRequest> AuditRequests { get; set; } = new List<AuditRequest>();

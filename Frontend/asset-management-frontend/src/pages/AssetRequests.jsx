@@ -7,8 +7,8 @@ function AssetRequests() {
     <>
       <Navbar />
       <div className="container mt-4">
-        <h2>Users</h2>
-        <p>Manage assets from here.</p>
+        <h2>Asset Request</h2>
+        <p>Manage assets requests from here.</p>
       </div>
     </>
   );

@@ -7,8 +7,8 @@ function Dashboard() {
     <>
       <Navbar />
       <div className="container mt-4">
-        <h2>Dashboard</h2>
-        <p>Welcome to the Asset Management Dashboard.</p>
+        <h2>Home page</h2>
+        <p>Welcome to the Asset Management home page.</p>
       </div>
     </>
   );

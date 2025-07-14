@@ -10,10 +10,13 @@ export default function UserSearch() {
 
   const handleSearch = async () => {
     try {
-      const url = type === 'id' ? `/Users/GetUserById/${query}` : `/Users/GetUserByRoleId/${query}`;
+      const url = type === 'id'
+        ? `/Users/GetUserById/${query}`
+        : `/Users/GetUserByRoleId/${query}`;
       const res = await axios.get(url);
       setResults(Array.isArray(res.data) ? res.data : [res.data]);
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert('Search failed');
     }
   };
@@ -31,11 +34,18 @@ export default function UserSearch() {
             </select>
           </div>
           <div className="col-md-4">
-            <input type="text" className="form-control"
-                   placeholder={`Enter ${type}`} value={query} onChange={e => setQuery(e.target.value)} />
+            <input
+              type="text"
+              className="form-control"
+              placeholder={`Enter ${type}`}
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+            />
           </div>
           <div className="col-md-2">
-            <button className="btn btn-outline-secondary" onClick={handleSearch}>Search</button>
+            <button className="btn btn-outline-secondary" onClick={handleSearch}>
+              Search
+            </button>
           </div>
         </div>
 
@@ -43,7 +53,7 @@ export default function UserSearch() {
           <ul className="list-group mt-3">
             {results.map(u => (
               <li key={u.userId} className="list-group-item">
-                <strong>{u.name}</strong> | Email: {u.email} | Role: {u.role}
+                <strong>{u.username}</strong> | Email: {u.email} | Role: {u.roleName}
               </li>
             ))}
           </ul>

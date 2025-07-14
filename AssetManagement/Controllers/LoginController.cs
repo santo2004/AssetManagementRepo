@@ -21,17 +21,28 @@ namespace AssetManagement.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult<string> Login([FromBody] LoginRequestDto dto)
+        public IActionResult Login([FromBody] LoginRequestDto dto)
         {
             var user = _context.Users
-                .Include(u => u.Role) 
+                .Include(u => u.Role)
                 .FirstOrDefault(u => u.Username == dto.Username && u.PasswordHash == dto.Password);
 
             if (user == null)
                 return Unauthorized("Invalid username or password.");
 
             var token = _jwtService.GenerateToken(user.Username, user.Role.RoleName);
-            return Ok(token);
+
+            return Ok(new
+            {
+                token = token,
+                user = new
+                {
+                    user.UserId,
+                    user.Username,
+                    user.Email,
+                    Role = user.Role.RoleName
+                }
+            });
         }
     }
 }

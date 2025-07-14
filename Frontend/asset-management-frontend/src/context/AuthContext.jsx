@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import React, { createContext, useState } from 'react';
 
 export const AuthContext = createContext();
@@ -8,8 +9,8 @@ export function AuthProvider({ children }) {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const login = ({ token, username }) => {
-    const info = { token, username };
+  const login = ({ token, user }) => {
+    const info = { token, user }; // Store user object with userId
     localStorage.setItem('auth', JSON.stringify(info));
     setAuth(info);
   };

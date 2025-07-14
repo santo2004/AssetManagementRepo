@@ -28,7 +28,8 @@ namespace AssetManagement.Services.Implementations
                 AssetId = a.AssetId,
                 AssetName = a.AssetName,
                 Status = a.Status,
-                Quantity = a.Quantity
+                Quantity = a.Quantity,
+                ImageUrl = a.ImageUrl,
             }).ToList();
         }
 
@@ -42,7 +43,8 @@ namespace AssetManagement.Services.Implementations
                 AssetId = asset.AssetId,
                 AssetName = asset.AssetName,
                 Status = asset.Status,
-                Quantity = asset.Quantity
+                Quantity = asset.Quantity,
+                ImageUrl = asset.ImageUrl,
             };
         }
 
@@ -55,7 +57,8 @@ namespace AssetManagement.Services.Implementations
                     AssetId = a.AssetId,
                     AssetName = a.AssetName,
                     Status = a.Status,
-                    Quantity = a.Quantity
+                    Quantity = a.Quantity,
+                    ImageUrl = a.ImageUrl
                 }).ToList();
         }
 
@@ -65,7 +68,8 @@ namespace AssetManagement.Services.Implementations
             {
                 AssetName = dto.AssetName,
                 Status = dto.Status,
-                Quantity = dto.Quantity
+                Quantity = dto.Quantity,
+                ImageUrl = dto.ImageUrl,
             };
 
             _context.Assets.Add(asset);
@@ -81,6 +85,7 @@ namespace AssetManagement.Services.Implementations
             asset.AssetName = dto.AssetName;
             asset.Status = dto.Status;
             asset.Quantity = dto.Quantity;
+            asset.ImageUrl = dto.ImageUrl;
 
             _context.SaveChanges();
             return "Asset updated successfully.";
@@ -114,7 +119,8 @@ namespace AssetManagement.Services.Implementations
                 AssetId = assetId,
                 UserId = userId,
                 Status = "Requested",
-                RequestDate = DateOnly.FromDateTime(DateTime.UtcNow)
+                RequestDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                Comments = "asset requested"
             };
             _context.AuditRequests.Add(audit);
 

@@ -7,8 +7,8 @@ function EmployeeAssets() {
     <>
       <Navbar />
       <div className="container mt-4">
-        <h2>Users</h2>
-        <p>Manage asset requests from here.</p>
+        <h2>employee assets</h2>
+        <p>Manage employee asset from here.</p>
       </div>
     </>
   );
