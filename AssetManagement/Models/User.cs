@@ -14,6 +14,8 @@
         public bool IsDeleted { get; set; } = false;
         //public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         //public bool IsActive { get; set; } = true;
+        public string? ResetToken { get; set; }
+        public DateTime? ResetTokenExpiry { get; set; }
         public Role Role { get; set; }
         public ICollection<EmployeeAsset> EmployeeAssets { get; set; } = new List<EmployeeAsset>();
         public ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();

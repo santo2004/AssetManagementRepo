@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from '../api/axiosInstance';
 
@@ -35,29 +35,41 @@ const Login = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          className="form-control mb-3"
-          placeholder="Username"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          className="form-control mb-3"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="btn btn-primary">Login</button>
-      </form>
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '400px' }}>
+        <div className="card-body">
+          <h2 className="card-title text-center mb-4">Login</h2>
+          <form onSubmit={handleLogin}>
+            <input
+              type="text"
+              className="form-control mb-3"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              className="form-control mb-2"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            {/* ✅ Forgot Password Link */}
+            <div className="text-end mb-3">
+              <Link to="/forgot-password" className="text-decoration-none small text-primary">
+                Forgot Password?
+              </Link>
+            </div>
+
+            <button type="submit" className="btn btn-primary w-100">Login</button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Login; // ✅ REQUIRED
+export default Login;

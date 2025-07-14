@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import User from './pages/Users/User';
 import UserList from './pages/Users/UserList';
@@ -34,7 +36,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />

@@ -44,5 +44,39 @@ namespace AssetManagement.Controllers
                 }
             });
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null)
+                return NotFound("Email not registered.");
+
+            var token = Guid.NewGuid().ToString().Substring(0, 6); // or use OTP logic
+            user.ResetToken = token;
+            user.ResetTokenExpiry = DateTime.UtcNow.AddMinutes(10);
+            await _context.SaveChangesAsync();
+
+            // Simulate sending email
+            Console.WriteLine($"[TOKEN for {dto.Email}]: {token}");
+
+            // ✅ Return the token in JSON object
+            return Ok(new { token = token });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null || user.ResetToken != dto.Token || user.ResetTokenExpiry < DateTime.UtcNow)
+                return BadRequest("Invalid or expired token.");
+
+            user.PasswordHash = dto.NewPassword; // hash if needed
+            user.ResetToken = null;
+            user.ResetTokenExpiry = null;
+
+            await _context.SaveChangesAsync();
+            return Ok("Password reset successfully.");
+        }
     }
 }
