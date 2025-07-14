@@ -75,24 +75,21 @@ namespace AssetManagement.Services.Implementations
                 AssetId = dto.AssetId,
                 Description = dto.Description,
                 IssueType = dto.IssueType,
-                Status = "Under Service", // default
-                RequestDate = DateOnly.FromDateTime(DateTime.UtcNow)
+                Status = string.IsNullOrEmpty(dto.Status) ? "Under Service" : dto.Status,
+                RequestDate = dto.RequestedDate != default ? dto.RequestedDate : DateOnly.FromDateTime(DateTime.UtcNow)
             };
 
-            // Create service request
             _context.ServiceRequests.Add(request);
 
-            // Also create audit request for this asset
             _context.AuditRequests.Add(new AuditRequest
             {
                 AssetId = request.AssetId,
                 UserId = request.UserId,
-                Status = "In Audit",  // or "Requested"
+                Status = "In Audit",
                 RequestDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Comments = "Service requested"
             });
 
-            _context.ServiceRequests.Add(request);
             _context.SaveChanges();
             return "Service request created and marked as Under Service.";
         }

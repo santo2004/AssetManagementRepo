@@ -12,28 +12,37 @@ function AssetRequestForm() {
   useEffect(() => {
     axios.get('/Assets/GetAll')
       .then(res => setAssets(res.data))
-      .catch(err => console.error('Failed to load assets', err));
+      .catch(err => console.error('Failed to load assets:', err));
   }, []);
 
   const handleRequest = (e) => {
     e.preventDefault();
+
     if (!assetId) {
       alert('Please select an asset.');
       return;
     }
 
     const userId = auth?.user?.userId;
+
     if (!userId) {
       alert('User ID is missing from context.');
       return;
     }
 
-    axios
-      .post(`/Assets/RequestAsset?assetId=${assetId}&userId=${userId}`)
-      .then(res => alert(res.data))
+    // ✅ Use correct endpoint: AssetRequests/CreateAssetRequest
+    axios.post(`/AssetRequests/Request?assetId=${assetId}&userId=${userId}`)
+      .then(res => {
+        alert(res.data);
+        setAssetId('');
+      })
       .catch(err => {
         console.error('Failed to request asset:', err);
-        alert('Asset request failed.');
+        if (err.response?.status === 401) {
+          alert('Unauthorized. Please login again.');
+        } else {
+          alert('Asset request failed.');
+        }
       });
   };
 
@@ -59,7 +68,6 @@ function AssetRequestForm() {
               ))}
             </select>
           </div>
-
           <button className="btn btn-primary" type="submit">Request Asset</button>
         </form>
       </div>

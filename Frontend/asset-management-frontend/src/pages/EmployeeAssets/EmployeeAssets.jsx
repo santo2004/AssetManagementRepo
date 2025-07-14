@@ -1,6 +1,6 @@
 // Example: src/pages/Users.jsx
 import React from 'react';
-import Navbar from '../components/Navbar';
+import Navbar from '../../components/Navbar';
 
 function EmployeeAssets() {
   return (
