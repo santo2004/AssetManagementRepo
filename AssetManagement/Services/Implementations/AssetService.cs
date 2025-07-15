@@ -159,7 +159,6 @@ namespace AssetManagement.Services.Implementations
             asset.Status = asset.Quantity == 0 ? "Out of Stock" : "Available";
             assetRequest.Status = "Assigned";
 
-            // ✅ Use AutoCreateAudit or CreateAuditRequest correctly
             _auditService.CreateAuditRequest(new AuditRequestDto
             {
                 UserId = userId,

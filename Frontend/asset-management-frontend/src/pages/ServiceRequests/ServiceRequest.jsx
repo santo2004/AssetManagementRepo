@@ -1,3 +1,4 @@
+// src/pages/ServiceRequests/ServiceRequest.jsx
 import React, { useState, useContext } from 'react';
 import axios from '../../api/axiosInstance';
 import Navbar from '../../components/Navbar';
@@ -12,7 +13,16 @@ function ServiceRequest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userId = auth?.user?.userId;
-    if (!userId) return alert('User ID missing');
+    if (!userId) {
+      alert('User ID missing');
+      return;
+    }
+
+    // Basic validation
+    if (!assetId || !issueType || !description) {
+      alert('Please fill out all fields.');
+      return;
+    }
 
     try {
       await axios.post('/ServiceRequests/CreateRequest', {
@@ -23,7 +33,7 @@ function ServiceRequest() {
         status: 'Requested',
         requestedDate: new Date().toISOString().split('T')[0]
       });
-      alert('Service request created');
+      alert('Service request created successfully!');
       setAssetId('');
       setDescription('');
       setIssueType('');
@@ -36,39 +46,51 @@ function ServiceRequest() {
   return (
     <>
       <Navbar />
-      <div className="container mt-4">
-        <h2>Create Service Request</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label>Asset ID</label>
-            <input
-              className="form-control"
-              type="number"
-              value={assetId}
-              onChange={e => setAssetId(e.target.value)}
-              required
-            />
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <div className="card shadow p-4">
+              <h3 className="card-title mb-4 text-center">Create Service Request</h3>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label className="form-label">Asset ID</label>
+                  <input
+                    className="form-control"
+                    type="number"
+                    value={assetId}
+                    onChange={(e) => setAssetId(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Issue Type</label>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={issueType}
+                    onChange={(e) => setIssueType(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Description</label>
+                  <textarea
+                    className="form-control"
+                    rows="4"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                  ></textarea>
+                </div>
+                <div className="text-center">
+                  <button className="btn btn-primary px-4" type="submit">
+                    Submit Request
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className="mb-3">
-            <label>Issue Type</label>
-            <input
-              className="form-control"
-              value={issueType}
-              onChange={e => setIssueType(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label>Description</label>
-            <textarea
-              className="form-control"
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              required
-            />
-          </div>
-          <button className="btn btn-primary">Submit Request</button>
-        </form>
+        </div>
       </div>
     </>
   );

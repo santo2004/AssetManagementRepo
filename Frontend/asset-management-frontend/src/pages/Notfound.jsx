@@ -9,7 +9,7 @@ function Notfound() {
     <div className="text-center mt-5">
       <h1 className="text-danger">404 - Page Not Found</h1>
       <p>The page you're looking for doesn't exist.</p>
-      <button className="btn btn-secondary mt-3" onClick={() => navigate('/')}>
+      <button className="btn btn-secondary mt-3" onClick={() => navigate('/dashboard')}>
         Go to Home
       </button>
     </div>

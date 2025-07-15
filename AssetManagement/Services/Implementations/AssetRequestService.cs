@@ -26,7 +26,6 @@ namespace AssetManagement.Services.Implementations
                 RequestDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
 
-            // 1. Add to EmployeeAsset table
             _context.EmployeeAssets.Add(new EmployeeAsset
             {
                 UserId = request.UserId,
@@ -35,7 +34,6 @@ namespace AssetManagement.Services.Implementations
                 Status = "Allocated"
             });
 
-            // 2. Update Asset table
             var asset = _context.Assets.FirstOrDefault(a => a.AssetId == request.AssetId);
             if (asset != null)
             {

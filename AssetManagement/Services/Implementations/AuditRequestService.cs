@@ -101,14 +101,13 @@ namespace AssetManagement.Services.Implementations
             return "Audit request deleted.";
         }
 
-        // ✅ Automatically create an audit (used by AssetService, EmployeeAssetService, etc.)
         public string AutoCreateAudit(int assetId, int userId, string status, string comment = "")
         {
             var audit = new AuditRequest
             {
                 AssetId = assetId,
                 UserId = userId,
-                Status = status, // Requested, Verified, Rejected, Returned
+                Status = status, 
                 Comments = comment,
                 VerifiedDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
@@ -119,7 +118,6 @@ namespace AssetManagement.Services.Implementations
             return "Audit auto-logged.";
         }
 
-        // ✅ To manually mark audit as "In Audit"
         public string MarkAuditInProgress(int auditRequestId)
         {
             var audit = _context.AuditRequests.FirstOrDefault(a => a.AuditRequestId == auditRequestId);

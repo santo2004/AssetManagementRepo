@@ -100,7 +100,6 @@ namespace AssetManagement.Services.Implementations
             allocation.Status = "Returned";
             allocation.ReturnDate = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            // Update asset quantity and status
             var asset = _context.Assets.FirstOrDefault(a => a.AssetId == assetId);
             if (asset != null)
             {
@@ -108,7 +107,6 @@ namespace AssetManagement.Services.Implementations
                 asset.Status = "Available";
             }
 
-            // Update audit request as "Returned" if exists
             var audit = _context.AuditRequests
                 .Where(a => a.AssetId == assetId && a.UserId == userId)
                 .OrderByDescending(a => a.AuditRequestId)
