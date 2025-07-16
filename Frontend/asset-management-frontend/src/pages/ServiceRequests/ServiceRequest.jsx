@@ -1,4 +1,3 @@
-// src/pages/ServiceRequests/ServiceRequest.jsx
 import React, { useState, useContext } from 'react';
 import axios from '../../api/axiosInstance';
 import Navbar from '../../components/Navbar';
@@ -18,7 +17,6 @@ function ServiceRequest() {
       return;
     }
 
-    // Basic validation
     if (!assetId || !issueType || !description) {
       alert('Please fill out all fields.');
       return;

@@ -1,4 +1,3 @@
-// src/pages/Assets/AssetRequestForm.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import axios from '../../api/axiosInstance';
 import Navbar from '../../components/Navbar';
@@ -30,7 +29,6 @@ function AssetRequestForm() {
       return;
     }
 
-    // ✅ Use correct endpoint: AssetRequests/CreateAssetRequest
     axios.post(`/AssetRequests/Request?assetId=${assetId}&userId=${userId}`)
       .then(res => {
         alert(res.data);

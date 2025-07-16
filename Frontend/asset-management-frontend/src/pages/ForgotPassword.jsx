@@ -14,7 +14,6 @@ function ForgotPassword() {
     try {
       const response = await axios.post('/Login/forgot-password', { email });
 
-      // ✅ Check if token is returned as response.data.token
       if (response.data?.token) {
         setToken(response.data.token);
         setMessage('Reset token generated. You can copy it below.');
@@ -77,7 +76,7 @@ function ForgotPassword() {
                 {copied ? 'Copied!' : 'Copy Token'}
               </button>
               <button className="btn btn-primary w-100" onClick={() => navigate('/reset-password')}>
-                Go to Reset Password
+                Go to Reset Password Page
               </button>
             </div>
           )}

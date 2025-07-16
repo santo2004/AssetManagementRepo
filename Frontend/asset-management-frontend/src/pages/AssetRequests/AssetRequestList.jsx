@@ -1,4 +1,3 @@
-// src/pages/AssetRequests/AssetRequestList.jsx
 import React, { useEffect, useState } from 'react';
 import axios from '../../api/axiosInstance';
 import Navbar from '../../components/Navbar';

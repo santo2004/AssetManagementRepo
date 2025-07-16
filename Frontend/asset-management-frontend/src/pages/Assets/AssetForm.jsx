@@ -1,4 +1,3 @@
-// src/pages/Assets/AssetForm.jsx
 import React, { useState } from 'react';
 import axios from '../../api/axiosInstance';
 import Navbar from '../../components/Navbar';

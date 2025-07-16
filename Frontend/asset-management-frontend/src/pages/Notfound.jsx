@@ -1,4 +1,3 @@
-// src/pages/Notfound.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 

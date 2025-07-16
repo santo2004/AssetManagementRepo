@@ -1,4 +1,3 @@
-// src/pages/Users/UserList.jsx
 import React, { useEffect, useState } from 'react';
 import axios from '../../api/axiosInstance';
 import Navbar from '../../components/Navbar';
@@ -8,7 +7,7 @@ export default function UserList() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('/Users/GetAllUser'); // this sends token + credentials
+      const res = await axios.get('/Users/GetAllUser'); 
       setUsers(res.data);
       console.log(res);
     } catch (err) {
@@ -22,7 +21,7 @@ export default function UserList() {
     try {
       await axios.put(`/Users/DeleteUser/${id}`);
       alert('User soft-deleted');
-      fetchUsers(); // This should fetch non-deleted users
+      fetchUsers();
     } catch (err) {
       console.error(err);
       alert('Delete failed');

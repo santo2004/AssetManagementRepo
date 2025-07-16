@@ -21,7 +21,6 @@ function Navbar() {
           </button>
         </li>
 
-        {/* Users (Admin only) */}
         {isAdmin && (
           <li className="nav-item dropdown">
             <div className="dropdown-hover nav-link">
@@ -35,7 +34,6 @@ function Navbar() {
           </li>
         )}
 
-        {/* Assets */}
         {(isAdmin || isUser) && (
           <li className="nav-item dropdown">
             <div className="dropdown-hover nav-link">
@@ -56,7 +54,6 @@ function Navbar() {
           </li>
         )}
 
-        {/* Asset Requests (Admin only) */}
         {isAdmin && (
           <li className="nav-item dropdown">
             <div className="dropdown-hover nav-link">
@@ -68,7 +65,6 @@ function Navbar() {
           </li>
         )}
 
-        {/* Employee Assets (Employee/Manager only) */}
         {isUser && (
           <li className="nav-item dropdown">
             <div className="dropdown-hover nav-link">
@@ -81,7 +77,6 @@ function Navbar() {
           </li>
         )}
 
-        {/* Service Requests */}
         {(isUser || isAdmin) && (
           <li className="nav-item dropdown">
             <div className="dropdown-hover nav-link">
@@ -101,7 +96,6 @@ function Navbar() {
           </li>
         )}
 
-        {/* Logout */}
         <li className="nav-item">
           <button
             className="btn btn-danger nav-link"

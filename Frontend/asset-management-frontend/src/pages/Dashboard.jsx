@@ -89,7 +89,6 @@ function DashboardCard({ title, options, navigate }) {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
